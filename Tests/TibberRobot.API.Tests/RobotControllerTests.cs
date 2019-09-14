@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using TibberRobot.API.Controllers;
-using TibberRobot.Domain.Enums;
+using TibberRobot.Domain.Features;
 using TibberRobot.Domain.Resources;
 using Xunit;
 
@@ -9,10 +10,16 @@ namespace TibberRobot.API.Tests
 {
     public class RobotControllerTests
     {
+        RobotController controller;
+
+        public RobotControllerTests()
+        {
+            controller = new RobotController(Mock.Of<IRobotMovement>());
+        }
         [Fact]
         public async void Post_ShoulReturn_OkResponse_For_CorrectData()
         {
-            var controller = new RobotController();
+            
             var commands = new List<CommandsResources>
             {
                 new CommandsResources() {Direction = "east", Steps = 1}
@@ -27,9 +34,7 @@ namespace TibberRobot.API.Tests
         [Fact]
         public async void Post_ShouldReturn_BadRequest_For_Empty_Command_And_Start_Data()
         {
-            var controlelr = new RobotController();
-
-            var result = await controlelr.Post(new MovementResource());
+            var result = await controller.Post(new MovementResource());
 
             Assert.IsType<BadRequestResult>(result);
         }
@@ -37,7 +42,6 @@ namespace TibberRobot.API.Tests
         [Fact]
         public async void Post_ShouldReturn_BadRequest_For_Empty_CommandsData()
         {
-            var controller = new RobotController();
             var query = new MovementResource { Start = new PositionResource() };
 
             var result = await controller.Post(query);
@@ -48,7 +52,6 @@ namespace TibberRobot.API.Tests
         [Fact]
         public async void Post_ShouldReturn_BadRequest_For_Empty_StartData()
         {
-            var controller = new RobotController();
             var query = new MovementResource { Commands = new List<CommandsResources>()};
 
             var result = await controller.Post(query);
@@ -59,7 +62,6 @@ namespace TibberRobot.API.Tests
         [Fact]
         public async void Post_ShouldReturn_BadRequest_For_NoCommands()
         {
-            var controller = new RobotController();
             var query = new MovementResource { Commands = new List<CommandsResources>(), Start = new PositionResource() };
 
             var result = await controller.Post(query);
@@ -71,7 +73,6 @@ namespace TibberRobot.API.Tests
         [MemberData(nameof(InvalidSteps))]
         public async void Post_ShouldReturn_BadRequest_For_Invalid_Steps(int steps)
         {
-            var controller = new RobotController();
             var commands = new List<CommandsResources>
             {
                 new CommandsResources() { Direction = "east", Steps = steps }
@@ -86,7 +87,6 @@ namespace TibberRobot.API.Tests
         [Fact]
         public async void Post_ShouldReturn_BadRequest_For_Invalid_Direction()
         {
-            var controller = new RobotController();
             var commands = new List<CommandsResources>
             {
                 new CommandsResources() { Direction = "abc", Steps = 1 }
@@ -102,7 +102,6 @@ namespace TibberRobot.API.Tests
         [MemberData(nameof(InvalidStarts))]
         public async void Post_ShouldReturn_BadRequest_For_Invalid_Start(int x, int y)
         {
-            var controller = new RobotController();
             var commands = new List<CommandsResources>
             {
                 new CommandsResources() { Direction = "west", Steps = 1 }
@@ -113,6 +112,24 @@ namespace TibberRobot.API.Tests
             var result = await controller.Post(query);
 
             Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        public async void Post_ShouldCall_FindUniqueCleanedPlaces()
+        {
+            var feature = new Mock<IRobotMovement>();
+            feature.Setup(f => f.FindUniqueCleanedPlaces(It.IsAny<MovementResource>())).Returns(It.IsAny<int>());
+            var commands = new List<CommandsResources>
+            {
+                new CommandsResources() {Direction = "east", Steps = 1}
+            };
+            var query = new MovementResource { Commands = commands, Start = new PositionResource() };
+            var controller = new RobotController(feature.Object);
+
+            await controller.Post(query);
+
+            feature.Verify(f => f.FindUniqueCleanedPlaces(query), Times.Once);
+
         }
 
         public static IEnumerable<object[]> InvalidSteps() =>

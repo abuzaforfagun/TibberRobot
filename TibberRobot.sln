@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TibberRobot.API.Tests", "Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TibberRobot.Domain", "TibberRobot.Domain\TibberRobot.Domain.csproj", "{3EA14607-968E-417F-9FF1-A904013F5DD2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TibberRobot.Domain.Tests", "TibberRobot.Domain.Tests\TibberRobot.Domain.Tests.csproj", "{FDCEE0D8-A373-4273-91E0-CEFB36EB5CB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,12 +31,17 @@ Global
 		{3EA14607-968E-417F-9FF1-A904013F5DD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EA14607-968E-417F-9FF1-A904013F5DD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EA14607-968E-417F-9FF1-A904013F5DD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDCEE0D8-A373-4273-91E0-CEFB36EB5CB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDCEE0D8-A373-4273-91E0-CEFB36EB5CB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDCEE0D8-A373-4273-91E0-CEFB36EB5CB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDCEE0D8-A373-4273-91E0-CEFB36EB5CB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CB7A9690-64ED-42BA-9C15-DC5F50010A09} = {C77CEC9B-2915-4F30-8C01-53246728A7D0}
+		{FDCEE0D8-A373-4273-91E0-CEFB36EB5CB0} = {C77CEC9B-2915-4F30-8C01-53246728A7D0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B10510E1-95EB-4ED4-8DB1-D5E178FAF51E}
