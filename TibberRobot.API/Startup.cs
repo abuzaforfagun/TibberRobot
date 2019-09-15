@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TibberRobot.Domain.Features;
+using TibberRobot.Domain.Features.RobotMovement;
+using TibberRobot.Repository.Presistance;
 
 namespace TibberRobot.API
 {
@@ -20,8 +22,12 @@ namespace TibberRobot.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            services.AddDbContext<RobotDbContext>(
+                options => options
+                    .UseNpgsql(Configuration.GetConnectionString("PostgreSQLDb"))
+            );
             services.AddScoped<IRobotMovement, RobotMovement>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

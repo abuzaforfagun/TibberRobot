@@ -4,4 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TibberRobot.Entities\TibberRobot.Entities.csproj" />
+    <ProjectReference Include="..\TibberRobot.Repository\TibberRobot.Repository.csproj" />
+  </ItemGroup>
+
 </Project>
