@@ -32,6 +32,9 @@ namespace TibberRobot.Domain.Features.RobotMovement
 
         private int GetUniqeCleanPoints(MovementResource movement)
         {
+            var entity = new Movement();
+            entity.Timestamp = DateTime.Now;
+            entity.Commands = movement.Commands.Count;
             List<PositionResource> res = new List<PositionResource>();
             PositionResource lastPosition = new PositionResource();
             lastPosition = movement.Start;
@@ -101,7 +104,6 @@ namespace TibberRobot.Domain.Features.RobotMovement
                     }
                 }
             }
-
             return res.Count;
         }
     }
