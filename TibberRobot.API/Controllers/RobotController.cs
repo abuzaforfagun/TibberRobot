@@ -9,11 +9,11 @@ namespace TibberRobot.API.Controllers
     [ApiController]
     public class RobotController : ControllerBase
     {
-        private readonly IRobotMovement robotMovement;
+        private readonly IRobotMovementHandler _robotMovementHandler;
 
-        public RobotController(IRobotMovement robotMovement)
+        public RobotController(IRobotMovementHandler robotMovementHandler)
         {
-            this.robotMovement = robotMovement;
+            this._robotMovementHandler = robotMovementHandler;
         }
         public async Task<IActionResult> Post(MovementResource movement)
         {
@@ -22,7 +22,7 @@ namespace TibberRobot.API.Controllers
                 return BadRequest();
             }
             
-            return Ok(await robotMovement.FindUniqueCleanedPlacesAsync(movement));
+            return Ok(await _robotMovementHandler.FindUniqueCleanedPlacesAsync(movement));
         }
     }
 }

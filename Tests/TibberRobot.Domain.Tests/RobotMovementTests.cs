@@ -25,7 +25,7 @@ namespace TibberRobot.Domain.Tests
         [Fact]
         public async void FindUniqueCleanedPlaces_ShouldReturn_CorrectData()
         {
-            var robotMovement = new RobotMovement(unitOfWorkMock.Object);
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object);
             var resource = new MovementResource
             {
                 Start = new PositionResource {X = 10, Y = 20},
@@ -44,7 +44,7 @@ namespace TibberRobot.Domain.Tests
         [Fact]
         public async void FindUniqueCleanedPlaces_ShouldCall_Repository()
         {
-            var robotMovement = new RobotMovement(unitOfWorkMock.Object);
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object);
             var resource = new MovementResource
             {
                 Start = new PositionResource { X = 10, Y = 20 },
@@ -62,7 +62,7 @@ namespace TibberRobot.Domain.Tests
         [Fact]
         public async void FindUniqueCleanedPlaces_ShouldCall_SaveChanges()
         {
-            var robotMovement = new RobotMovement(unitOfWorkMock.Object);
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object);
             var resource = new MovementResource
             {
                 Start = new PositionResource { X = 10, Y = 20 },

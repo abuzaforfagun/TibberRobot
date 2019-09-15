@@ -15,7 +15,7 @@ namespace TibberRobot.API.Tests
 
         public RobotControllerTests()
         {
-            controller = new RobotController(Mock.Of<IRobotMovement>());
+            controller = new RobotController(Mock.Of<IRobotMovementHandler>());
         }
         [Fact]
         public async void Post_ShoulReturn_OkResponse_For_CorrectData()
@@ -118,7 +118,7 @@ namespace TibberRobot.API.Tests
         [Fact]
         public async void Post_ShouldCall_FindUniqueCleanedPlaces()
         {
-            var feature = new Mock<IRobotMovement>();
+            var feature = new Mock<IRobotMovementHandler>();
             feature.Setup(f => f.FindUniqueCleanedPlacesAsync(It.IsAny<MovementResource>())).ReturnsAsync(It.IsAny<int>());
             var commands = new List<CommandsResources>
             {

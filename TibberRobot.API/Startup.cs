@@ -27,7 +27,7 @@ namespace TibberRobot.API
                 options => options
                     .UseNpgsql(Configuration.GetConnectionString("PostgreSQLDb"))
             );
-            services.AddScoped<IRobotMovement, RobotMovement>();
+            services.AddScoped<IRobotMovementHandler, RobotMovementHandler>();
             services.AddScoped<IMovementRepository, MovementRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
