@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TibberRobot.Domain.Features.RobotMovement;
+using TibberRobot.Repository;
 using TibberRobot.Repository.Presistance;
 
 namespace TibberRobot.API
@@ -27,7 +28,8 @@ namespace TibberRobot.API
                     .UseNpgsql(Configuration.GetConnectionString("PostgreSQLDb"))
             );
             services.AddScoped<IRobotMovement, RobotMovement>();
-            
+            services.AddScoped<IMovementRepository, MovementRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

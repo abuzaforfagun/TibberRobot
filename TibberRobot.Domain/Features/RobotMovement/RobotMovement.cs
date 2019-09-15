@@ -1,13 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TibberRobot.Domain.Resources;
+using TibberRobot.Entities;
+using TibberRobot.Repository.Presistance;
 
-namespace TibberRobot.Domain.Features
+namespace TibberRobot.Domain.Features.RobotMovement
 {
     public class RobotMovement : IRobotMovement
     {
-        public int FindUniqueCleanedPlaces(MovementResource movement)
+        private readonly IUnitOfWork unitOfWork;
+
+        public RobotMovement(IUnitOfWork unitOfWork)
         {
+            this.unitOfWork = unitOfWork;
+        }
+        public async Task<int> FindUniqueCleanedPlacesAsync(MovementResource movement)
+        {
+            var entity = new Movement();
+            entity.Timestamp = DateTime.Now;
+            entity.Commands = movement.Commands.Count;
             List<PositionResource> res = new List<PositionResource>();
             PositionResource lastPosition = new PositionResource();
             lastPosition = movement.Start;
@@ -71,6 +84,10 @@ namespace TibberRobot.Domain.Features
                 }
             }
 
+            entity.Result = res.Count;
+            unitOfWork.MovementRepository.Add(entity);
+            entity.Duration = Convert.ToDecimal(entity.Timestamp.Ticks) - Convert.ToDecimal(DateTime.Now.Ticks);
+            await unitOfWork.SaveChangesAsync();
             return res.Count;
         }
     }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using TibberRobot.Domain.Features;
+using TibberRobot.Domain.Features.RobotMovement;
 using TibberRobot.Domain.Resources;
 
 namespace TibberRobot.API.Controllers
@@ -22,7 +22,7 @@ namespace TibberRobot.API.Controllers
                 return BadRequest();
             }
             
-            return Ok(robotMovement.FindUniqueCleanedPlaces(movement));
+            return Ok(await robotMovement.FindUniqueCleanedPlacesAsync(movement));
         }
     }
 }

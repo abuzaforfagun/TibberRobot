@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TibberRobot.API.Controllers;
 using TibberRobot.Domain.Features;
+using TibberRobot.Domain.Features.RobotMovement;
 using TibberRobot.Domain.Resources;
 using Xunit;
 
@@ -28,7 +29,7 @@ namespace TibberRobot.API.Tests
 
             var result = await controller.Post(query);
 
-            Assert.IsType<OkResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
@@ -118,7 +119,7 @@ namespace TibberRobot.API.Tests
         public async void Post_ShouldCall_FindUniqueCleanedPlaces()
         {
             var feature = new Mock<IRobotMovement>();
-            feature.Setup(f => f.FindUniqueCleanedPlaces(It.IsAny<MovementResource>())).Returns(It.IsAny<int>());
+            feature.Setup(f => f.FindUniqueCleanedPlacesAsync(It.IsAny<MovementResource>())).ReturnsAsync(It.IsAny<int>());
             var commands = new List<CommandsResources>
             {
                 new CommandsResources() {Direction = "east", Steps = 1}
@@ -128,7 +129,7 @@ namespace TibberRobot.API.Tests
 
             await controller.Post(query);
 
-            feature.Verify(f => f.FindUniqueCleanedPlaces(query), Times.Once);
+            feature.Verify(f => f.FindUniqueCleanedPlacesAsync(query), Times.Once);
 
         }
 
