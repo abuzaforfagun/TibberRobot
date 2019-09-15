@@ -1,13 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TibberRobot.Domain.Resources;
+using TibberRobot.Entities;
+using TibberRobot.Repository.Presistance;
 
-namespace TibberRobot.Domain.Features
+namespace TibberRobot.Domain.Features.RobotMovement
 {
     public class RobotMovement : IRobotMovement
     {
-        public int FindUniqueCleanedPlaces(MovementResource movement)
+        private readonly IUnitOfWork unitOfWork;
+
+        public RobotMovement(IUnitOfWork unitOfWork)
         {
+            this.unitOfWork = unitOfWork;
+        }
+        public async Task<int> FindUniqueCleanedPlacesAsync(MovementResource movement)
+        {
+            var entity = new Movement();
+            entity.Timestamp = DateTime.Now;
+            entity.Commands = movement.Commands.Count;
+            entity.Result = GetUniqeCleanPoints(movement);
+            unitOfWork.MovementRepository.Add(entity);
+            var difference = DateTime.Now.Ticks - entity.Timestamp.Ticks;
+            var differenceTimeSpan = new TimeSpan(difference);
+            entity.Duration = Convert.ToDecimal(differenceTimeSpan.TotalSeconds);
+            await unitOfWork.SaveChangesAsync();
+            return entity.Result;
+        }
+
+        private int GetUniqeCleanPoints(MovementResource movement)
+        {
+            var entity = new Movement();
+            entity.Timestamp = DateTime.Now;
+            entity.Commands = movement.Commands.Count;
             List<PositionResource> res = new List<PositionResource>();
             PositionResource lastPosition = new PositionResource();
             lastPosition = movement.Start;
@@ -27,9 +54,11 @@ namespace TibberRobot.Domain.Features
                         {
                             res.Add(pos);
                         }
+
                         lastPosition = pos;
                     }
-                } else if (direction == "west")
+                }
+                else if (direction == "west")
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
@@ -40,9 +69,11 @@ namespace TibberRobot.Domain.Features
                         {
                             res.Add(pos);
                         }
+
                         lastPosition = pos;
                     }
-                } else if (direction == "north")
+                }
+                else if (direction == "north")
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
@@ -53,9 +84,11 @@ namespace TibberRobot.Domain.Features
                         {
                             res.Add(pos);
                         }
+
                         lastPosition = pos;
                     }
-                } else if (direction == "south")
+                }
+                else if (direction == "south")
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
@@ -66,11 +99,11 @@ namespace TibberRobot.Domain.Features
                         {
                             res.Add(pos);
                         }
+
                         lastPosition = pos;
                     }
                 }
             }
-
             return res.Count;
         }
     }
