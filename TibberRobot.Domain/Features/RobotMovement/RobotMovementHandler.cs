@@ -8,11 +8,11 @@ using TibberRobot.Repository.Presistance;
 
 namespace TibberRobot.Domain.Features.RobotMovement
 {
-    public class RobotMovement : IRobotMovement
+    public class RobotMovementHandler : IRobotMovementHandler
     {
         private readonly IUnitOfWork unitOfWork;
 
-        public RobotMovement(IUnitOfWork unitOfWork)
+        public RobotMovementHandler(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }

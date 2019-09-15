@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TibberRobot.Domain\TibberRobot.Domain.csproj" />
+    <ProjectReference Include="..\..\TibberRobot.Domain\TibberRobot.Domain.csproj" />
   </ItemGroup>
 
 </Project>

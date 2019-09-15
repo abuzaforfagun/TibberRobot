@@ -3,7 +3,7 @@ using TibberRobot.Domain.Resources;
 
 namespace TibberRobot.Domain.Features.RobotMovement
 {
-    public interface IRobotMovement
+    public interface IRobotMovementHandler
     {
         Task<int> FindUniqueCleanedPlacesAsync(MovementResource movement);
     }
