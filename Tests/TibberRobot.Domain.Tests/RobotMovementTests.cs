@@ -5,6 +5,7 @@ using Xunit;
 using Moq;
 using TibberRobot.Entities;
 using TibberRobot.Repository.Presistance;
+using AutoMapper;
 
 namespace TibberRobot.Domain.Tests
 {
@@ -12,12 +13,16 @@ namespace TibberRobot.Domain.Tests
     {
         Mock<IMovementRepository> repositoryMock;
         Mock<IUnitOfWork> unitOfWorkMock;
+        Mock<IMapper> mapperMock;
 
         public RobotMovementTests()
         {
             repositoryMock = new Mock<IMovementRepository>();
             unitOfWorkMock = new Mock<IUnitOfWork>();
             repositoryMock.Setup(r => r.Add(It.IsAny<Movement>()));
+            mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(m => m.Map<MovementResource, Movement>(It.IsAny<MovementResource>()))
+                .Returns(new Movement());
 
             unitOfWorkMock.Setup(u => u.MovementRepository).Returns(repositoryMock.Object);
             unitOfWorkMock.Setup(u => u.SaveChangesAsync());
@@ -25,7 +30,7 @@ namespace TibberRobot.Domain.Tests
         [Fact]
         public async void FindUniqueCleanedPlaces_ShouldReturn_CorrectData()
         {
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object);
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
             var resource = new MovementResource
             {
                 Start = new PositionResource {X = 10, Y = 20},
@@ -44,7 +49,7 @@ namespace TibberRobot.Domain.Tests
         [Fact]
         public async void FindUniqueCleanedPlaces_ShouldCall_Repository()
         {
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object);
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
             var resource = new MovementResource
             {
                 Start = new PositionResource { X = 10, Y = 20 },
@@ -62,7 +67,7 @@ namespace TibberRobot.Domain.Tests
         [Fact]
         public async void FindUniqueCleanedPlaces_ShouldCall_SaveChanges()
         {
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object);
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
             var resource = new MovementResource
             {
                 Start = new PositionResource { X = 10, Y = 20 },

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,10 +28,11 @@ namespace TibberRobot.API
                 options => options
                     .UseNpgsql(Configuration.GetConnectionString("PostgreSQLDb"))
             );
+            services.AddAutoMapper();
+
             services.AddScoped<IRobotMovementHandler, RobotMovementHandler>();
             services.AddScoped<IMovementRepository, MovementRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
