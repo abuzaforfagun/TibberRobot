@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TibberRobot.API.Controllers;
-using TibberRobot.Domain.Features;
 using TibberRobot.Domain.Features.RobotMovement;
 using TibberRobot.Domain.Resources;
 using Xunit;
@@ -150,6 +149,6 @@ namespace TibberRobot.API.Tests
                 new object[] { 0, -100001 },
                 new object[] { 100001, 1 },
                 new object[] { -100001, 1 }
-    };
+            };
     }
 }
