@@ -44,7 +44,7 @@ namespace TibberRobot.Domain.Features.RobotMovement
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
-                        if (_x == movement.Start.X || (movement.Start.X < 0 && _x >= 0))
+                        if (CanMoveOnPositivePosition(movement.Start.X, _x))
                         {
                             break;
                         }
@@ -56,7 +56,7 @@ namespace TibberRobot.Domain.Features.RobotMovement
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
-                        if (_x == movement.Start.X || (movement.Start.X > 0 && _x <= 0))
+                        if (CanMoveOnNegativePosition(movement.Start.X, _x))
                         {
                             break;
                         }
@@ -68,7 +68,7 @@ namespace TibberRobot.Domain.Features.RobotMovement
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
-                        if (_y == movement.Start.Y || (movement.Start.Y < 0 && _y >= 0))
+                        if (CanMoveOnPositivePosition(movement.Start.Y, _y))
                         {
                             break;
                         }
@@ -80,7 +80,7 @@ namespace TibberRobot.Domain.Features.RobotMovement
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
-                        if (_y == movement.Start.Y || (movement.Start.Y > 0 && _y <= 0))
+                        if (CanMoveOnNegativePosition(movement.Start.Y, _y))
                         {
                             break;
                         }
@@ -90,6 +90,16 @@ namespace TibberRobot.Domain.Features.RobotMovement
                 }
             }
             return res.Count;
+        }
+
+        private static bool CanMoveOnPositivePosition(decimal limit, int position)
+        {
+            return position == limit || (limit < 0 && position >= 0);
+        }
+
+        private static bool CanMoveOnNegativePosition(decimal limit, int position)
+        {
+            return position == limit || (limit > 0 && position <= 0);
         }
 
         private static void AddPath(List<PositionResource> res, int _x, int _y)
