@@ -35,75 +35,69 @@ namespace TibberRobot.Domain.Features.RobotMovement
         private int GetUniqeCleanPoints(MovementResource movement)
         {
             var res = new List<PositionResource>();
-            var lastPosition = new PositionResource();
-            lastPosition = movement.Start;
-            res.Add(movement.Start);
+            int _x = 0;
+            int _y = 0;
             //todo: improve the code structure
             foreach (var command in movement.Commands)
             {
-                var direction = command.Direction;
-                if (direction == "east")
+                if (command.Direction == "east")
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
-                        var pos = new PositionResource();
-                        pos.X = lastPosition.X + 1;
-                        pos.Y = lastPosition.Y;
-                        if (res.Count(r => r.Y == pos.Y && r.X == pos.X) == 0)
+                        if (_x == movement.Start.X || (movement.Start.X < 0 && _x >= 0))
                         {
-                            res.Add(pos);
+                            break;
                         }
-
-                        lastPosition = pos;
+                        _x++;
+                        AddPath(res, _x, _y);
                     }
                 }
-                else if (direction == "west")
+                else if (command.Direction == "west")
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
-                        var pos = new PositionResource();
-                        pos.X = lastPosition.X - 1;
-                        pos.Y = lastPosition.Y;
-                        if (res.Count(r => r.Y == pos.Y && r.X == pos.X) == 0)
+                        if (_x == movement.Start.X || (movement.Start.X > 0 && _x <= 0))
                         {
-                            res.Add(pos);
+                            break;
                         }
-
-                        lastPosition = pos;
+                        _x--;
+                        AddPath(res, _x, _y);
                     }
                 }
-                else if (direction == "north")
+                else if (command.Direction == "north")
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
-                        var pos = new PositionResource();
-                        pos.X = lastPosition.X;
-                        pos.Y = lastPosition.Y + 1;
-                        if (res.Count(r => r.Y == pos.Y && r.X == pos.X) == 0)
+                        if (_y == movement.Start.Y || (movement.Start.Y < 0 && _y >= 0))
                         {
-                            res.Add(pos);
+                            break;
                         }
-
-                        lastPosition = pos;
+                        _y++;
+                        AddPath(res, _x, _y);
                     }
                 }
-                else if (direction == "south")
+                else if (command.Direction == "south")
                 {
                     for (int i = 0; i < command.Steps; i++)
                     {
-                        var pos = new PositionResource();
-                        pos.X = lastPosition.X;
-                        pos.Y = lastPosition.Y - 1;
-                        if (res.Count(r => r.Y == pos.Y && r.X == pos.X) == 0)
+                        if (_y == movement.Start.Y || (movement.Start.Y > 0 && _y <= 0))
                         {
-                            res.Add(pos);
+                            break;
                         }
-
-                        lastPosition = pos;
+                        _y--;
+                        AddPath(res, _x, _y);
                     }
                 }
             }
             return res.Count;
+        }
+
+        private static void AddPath(List<PositionResource> res, int _x, int _y)
+        {
+            if (res.Count(r => r.Y == _y && r.X == _x) == 0)
+            {
+                res.Add(new PositionResource { X = _x, Y = _y });
+            }
         }
     }
 }
