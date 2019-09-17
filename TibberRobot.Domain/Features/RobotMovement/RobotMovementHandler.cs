@@ -34,62 +34,51 @@ namespace TibberRobot.Domain.Features.RobotMovement
 
         private int GetUniqeCleanPoints(MovementResource movement)
         {
-            var res = new List<PositionResource>();
+            var uniquePlaces = new List<PositionResource>();
             int _x = 0;
             int _y = 0;
+            var directions = mapper.Map<MovementResource, IEnumerable<string>>(movement);
+            var lastIgnoredDirection = "";
+
             //todo: improve the code structure
-            foreach (var command in movement.Commands)
+            foreach (var _direction in directions)
             {
-                if (command.Direction == "east")
+                if (_direction == "east")
                 {
-                    for (int i = 0; i < command.Steps; i++)
+                    if (CanMoveOnPositivePosition(movement.Start.X, _x))
                     {
-                        if (CanMoveOnPositivePosition(movement.Start.X, _x))
-                        {
-                            break;
-                        }
-                        _x++;
-                        AddPath(res, _x, _y);
+                        continue;
                     }
+                    _x++;
                 }
-                else if (command.Direction == "west")
+                else if (_direction == "west")
                 {
-                    for (int i = 0; i < command.Steps; i++)
+                    if (CanMoveOnNegativePosition(movement.Start.X, _x))
                     {
-                        if (CanMoveOnNegativePosition(movement.Start.X, _x))
-                        {
-                            break;
-                        }
-                        _x--;
-                        AddPath(res, _x, _y);
+                        continue;
                     }
+                    _x--;
                 }
-                else if (command.Direction == "north")
+                else if (_direction == "north")
                 {
-                    for (int i = 0; i < command.Steps; i++)
+                    if (CanMoveOnPositivePosition(movement.Start.Y, _y))
                     {
-                        if (CanMoveOnPositivePosition(movement.Start.Y, _y))
-                        {
-                            break;
-                        }
-                        _y++;
-                        AddPath(res, _x, _y);
+                        continue;
                     }
+                    _y++;
                 }
-                else if (command.Direction == "south")
+                else if (_direction == "south")
                 {
-                    for (int i = 0; i < command.Steps; i++)
+                    if (CanMoveOnNegativePosition(movement.Start.Y, _y))
                     {
-                        if (CanMoveOnNegativePosition(movement.Start.Y, _y))
-                        {
-                            break;
-                        }
-                        _y--;
-                        AddPath(res, _x, _y);
+                        continue;
                     }
+                   _y--;
                 }
+                AddPath(uniquePlaces, _x, _y);
+
             }
-            return res.Count;
+            return uniquePlaces.Count;
         }
 
         private static bool CanMoveOnPositivePosition(decimal limit, int position)
@@ -102,11 +91,11 @@ namespace TibberRobot.Domain.Features.RobotMovement
             return position == limit || (limit > 0 && position <= 0);
         }
 
-        private static void AddPath(List<PositionResource> res, int _x, int _y)
+        private static void AddPath(List<PositionResource> uniquePlaces, int _x, int _y)
         {
-            if (res.Count(r => r.Y == _y && r.X == _x) == 0)
+            if (uniquePlaces.Count(r => r.Y == _y && r.X == _x) == 0)
             {
-                res.Add(new PositionResource { X = _x, Y = _y });
+                uniquePlaces.Add(new PositionResource { X = _x, Y = _y });
             }
         }
     }

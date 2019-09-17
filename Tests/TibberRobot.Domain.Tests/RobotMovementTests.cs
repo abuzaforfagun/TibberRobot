@@ -372,7 +372,12 @@ namespace TibberRobot.Domain.Tests
         public async void FindUniqueCleanedPlaces_ShouldReturn_CorrectData(
             MovementResource resource, int expectedResult)
         {
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
+            var mockMapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingConfiguration());
+            });
+            var mapper = mockMapper.CreateMapper();
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapper);
 
             var result = await robotMovement.FindUniqueCleanedPlacesAsync(resource);
 
