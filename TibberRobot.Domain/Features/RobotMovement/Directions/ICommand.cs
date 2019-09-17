@@ -4,8 +4,7 @@ namespace TibberRobot.Domain.Features.RobotMovement.Directions
 {
     public interface ICommand
     {
-        PositionResource Start { get; set; }
-        bool IsNextStepInvalid(decimal x, decimal y);
+        decimal Limit { get; set; }
         PositionResource GetUniqueResource(decimal x, decimal y);
     }
 }

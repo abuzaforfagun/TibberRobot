@@ -2,15 +2,13 @@
 
 namespace TibberRobot.Domain.Features.RobotMovement.Directions
 {
-    public class NorthCommand : ICommand
+    public class NorthCommand : CommandValidtor, ICommand
     {
-        public PositionResource Start { get; set; }
-
-        public bool IsNextStepInvalid(decimal x, decimal y) => y == Start.Y || (Start.Y < 0 && y >= 0);
+        public decimal Limit { get; set; }
 
         public PositionResource GetUniqueResource(decimal x, decimal y)
         {
-            if (IsNextStepInvalid(x, y))
+            if (IsNextStepInvalidInPositiveGraph(y, Limit))
             {
                 return null;
             }

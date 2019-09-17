@@ -36,28 +36,28 @@ namespace TibberRobot.Domain.Features.RobotMovement
                     {
                         result.Add(new EastCommand
                         {
-                            Start = source.Start
+                            Limit = source.Start.X
                         });
                     }
                     else if (s.Direction == "west")
                     {
                         result.Add(new WestCommand
                         {
-                            Start = source.Start
+                            Limit = source.Start.X
                         });
                     }
                     else if (s.Direction == "north")
                     {
                         result.Add(new NorthCommand
                         {
-                            Start = source.Start
+                            Limit = source.Start.Y
                         });
                     }
                     else if (s.Direction == "south")
                     {
                         result.Add(new SouthCommand
                         {
-                            Start = source.Start
+                            Limit = source.Start.Y
                         });
                     }
                 }
