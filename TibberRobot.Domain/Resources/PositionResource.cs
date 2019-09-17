@@ -14,5 +14,16 @@
 
             return true;
         }
+
+        public PositionResource(decimal X, decimal Y)
+        {
+            this.X = X;
+            this.Y = Y;
+        }
+
+        public PositionResource()
+        {
+            
+        }
     }
 }

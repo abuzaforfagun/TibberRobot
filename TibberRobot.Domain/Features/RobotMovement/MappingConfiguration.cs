@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
+using TibberRobot.Domain.Features.RobotMovement.Directions;
 using TibberRobot.Domain.Resources;
 using TibberRobot.Entities;
 
@@ -17,21 +18,48 @@ namespace TibberRobot.Domain.Features.RobotMovement
                 .ForMember(d => d.Id, opt => opt.Ignore())
                 .ForMember(d => d.Result, opt => opt.Ignore());
 
-            CreateMap<MovementResource, IEnumerable<string>>()
+            CreateMap<MovementResource, IEnumerable<ICommand>>()
                 .ConvertUsing<CommandsConverter>();
         }
     }
 
-    class CommandsConverter : ITypeConverter<MovementResource, IEnumerable<string>>
+    class CommandsConverter : ITypeConverter<MovementResource, IEnumerable<ICommand>>
     {
-        public IEnumerable<string> Convert(MovementResource source, IEnumerable<string> destination, ResolutionContext context)
+        public IEnumerable<ICommand> Convert(MovementResource source, IEnumerable<ICommand> destination, ResolutionContext context)
         {
-            var result = new List<string>();
+            var result = new List<ICommand>();
             foreach (var s in source.Commands)
             {
                 for (int i = 0; i < s.Steps; i++)
                 {
-                    result.Add(s.Direction);
+                    if (s.Direction == "east")
+                    {
+                        result.Add(new EastCommand
+                        {
+                            Start = source.Start
+                        });
+                    }
+                    else if (s.Direction == "west")
+                    {
+                        result.Add(new WestCommand
+                        {
+                            Start = source.Start
+                        });
+                    }
+                    else if (s.Direction == "north")
+                    {
+                        result.Add(new NorthCommand
+                        {
+                            Start = source.Start
+                        });
+                    }
+                    else if (s.Direction == "south")
+                    {
+                        result.Add(new SouthCommand
+                        {
+                            Start = source.Start
+                        });
+                    }
                 }
             }
 
