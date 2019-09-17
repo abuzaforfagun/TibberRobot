@@ -43,7 +43,7 @@ namespace TibberRobot.Domain.Features.RobotMovement
             //todo: improve the code structure
             foreach (var _direction in directions)
             {
-                var lastPosition = _direction.GetUniqueResource(_x, _y);
+                var lastPosition = _direction.GetNewPosition(_x, _y);
                 if (lastPosition == null)
                 {
                     continue;

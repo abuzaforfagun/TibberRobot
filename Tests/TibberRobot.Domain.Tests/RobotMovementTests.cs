@@ -369,8 +369,7 @@ namespace TibberRobot.Domain.Tests
 
         [Theory]
         [MemberData(nameof(ResourceList))]
-        public async void FindUniqueCleanedPlaces_ShouldReturn_CorrectData(
-            MovementResource resource, int expectedResult)
+        public async void FindUniqueCleanedPlaces_ShouldReturn_CorrectData(MovementResource resource, int expectedResult)
         {
             var mockMapper = new MapperConfiguration(cfg =>
             {

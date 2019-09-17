@@ -6,13 +6,13 @@ namespace TibberRobot.Domain.Features.RobotMovement.Directions
     {
         public decimal Limit { get; set; }
 
-        public PositionResource GetUniqueResource(decimal x, decimal y)
+        public PositionResource GetNewPosition(decimal x, decimal y)
         {
-            if (IsNextStepInvalidInNegativeGraph(x, Limit))
+            if (IsNextStepValidInNegativeGraph(x, Limit))
             {
-                return null;
+                return new PositionResource(x - 1, y);
             }
-            return new PositionResource(x - 1, y);
+            return null;
         }
     }
 }
