@@ -14,6 +14,73 @@ namespace TibberRobot.Domain.Tests
         Mock<IMovementRepository> repositoryMock;
         Mock<IUnitOfWork> unitOfWorkMock;
         Mock<IMapper> mapperMock;
+        
+        public RobotMovementTests()
+        {
+            repositoryMock = new Mock<IMovementRepository>();
+            unitOfWorkMock = new Mock<IUnitOfWork>();
+            repositoryMock.Setup(r => r.Add(It.IsAny<Movement>()));
+            mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(m => m.Map<MovementResource, Movement>(It.IsAny<MovementResource>()))
+                .Returns(new Movement());
+
+            unitOfWorkMock.Setup(u => u.MovementRepository).Returns(repositoryMock.Object);
+            unitOfWorkMock.Setup(u => u.SaveChangesAsync());
+        }
+        
+
+        [Theory]
+        [MemberData(nameof(ResourceList))]
+        public async void FindUniqueCleanedPlaces_ShouldReturn_CorrectData(MovementResource resource, int expectedResult)
+        {
+            var mockMapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingConfiguration());
+            });
+            var mapper = mockMapper.CreateMapper();
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapper);
+
+            var result = await robotMovement.FindUniqueCleanedPlacesAsync(resource);
+
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public async void FindUniqueCleanedPlaces_ShouldCall_Repository()
+        {
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
+            var resource = new MovementResource
+            {
+                Start = new PositionResource { X = 10, Y = 20 },
+                Commands = new List<CommandsResources>
+                {
+                    new CommandsResources {Direction = "east", Steps = 2}
+                }
+            };
+
+            await robotMovement.FindUniqueCleanedPlacesAsync(resource);
+
+            repositoryMock.Verify(r => r.Add(It.IsAny<Movement>()), Times.Once);
+        }
+
+        [Fact]
+        public async void FindUniqueCleanedPlaces_ShouldCall_SaveChanges()
+        {
+            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
+            var resource = new MovementResource
+            {
+                Start = new PositionResource { X = 10, Y = 20 },
+                Commands = new List<CommandsResources>
+                {
+                    new CommandsResources {Direction = "east", Steps = 2}
+                }
+            };
+
+            await robotMovement.FindUniqueCleanedPlacesAsync(resource);
+
+            unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+        }
+
         #region memory data
         public static IEnumerable<object[]> ResourceList() =>
             new List<object[]>
@@ -353,70 +420,5 @@ namespace TibberRobot.Domain.Tests
                 },
             };
         #endregion
-        public RobotMovementTests()
-        {
-            repositoryMock = new Mock<IMovementRepository>();
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            repositoryMock.Setup(r => r.Add(It.IsAny<Movement>()));
-            mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(m => m.Map<MovementResource, Movement>(It.IsAny<MovementResource>()))
-                .Returns(new Movement());
-
-            unitOfWorkMock.Setup(u => u.MovementRepository).Returns(repositoryMock.Object);
-            unitOfWorkMock.Setup(u => u.SaveChangesAsync());
-        }
-        
-
-        [Theory]
-        [MemberData(nameof(ResourceList))]
-        public async void FindUniqueCleanedPlaces_ShouldReturn_CorrectData(MovementResource resource, int expectedResult)
-        {
-            var mockMapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingConfiguration());
-            });
-            var mapper = mockMapper.CreateMapper();
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapper);
-
-            var result = await robotMovement.FindUniqueCleanedPlacesAsync(resource);
-
-            Assert.Equal(expectedResult, result);
-        }
-
-        [Fact]
-        public async void FindUniqueCleanedPlaces_ShouldCall_Repository()
-        {
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
-            var resource = new MovementResource
-            {
-                Start = new PositionResource { X = 10, Y = 20 },
-                Commands = new List<CommandsResources>
-                {
-                    new CommandsResources {Direction = "east", Steps = 2}
-                }
-            };
-
-            await robotMovement.FindUniqueCleanedPlacesAsync(resource);
-
-            repositoryMock.Verify(r => r.Add(It.IsAny<Movement>()), Times.Once);
-        }
-
-        [Fact]
-        public async void FindUniqueCleanedPlaces_ShouldCall_SaveChanges()
-        {
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
-            var resource = new MovementResource
-            {
-                Start = new PositionResource { X = 10, Y = 20 },
-                Commands = new List<CommandsResources>
-                {
-                    new CommandsResources {Direction = "east", Steps = 2}
-                }
-            };
-
-            await robotMovement.FindUniqueCleanedPlacesAsync(resource);
-
-            unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Once);
-        }
     }
 }
