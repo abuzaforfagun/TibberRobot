@@ -2,7 +2,7 @@
 
 namespace TibberRobot.Domain.Resources
 {
-    public class CommandResources
+    public class CommandResource
     {
         readonly string[] directions = { "east", "west", "north", "south" };
 

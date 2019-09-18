@@ -20,9 +20,9 @@ namespace TibberRobot.API.Tests
         public async void Post_ShoulReturn_OkResponse_For_CorrectData()
         {
             
-            var commands = new List<CommandResources>
+            var commands = new List<CommandResource>
             {
-                new CommandResources() {Direction = "east", Steps = 1}
+                new CommandResource() {Direction = "east", Steps = 1}
             };
             var query = new MovementResource {Commands = commands, Start = new PositionResource()};
 
@@ -52,7 +52,7 @@ namespace TibberRobot.API.Tests
         [Fact]
         public async void Post_ShouldReturn_BadRequest_For_Empty_StartData()
         {
-            var query = new MovementResource { Commands = new List<CommandResources>()};
+            var query = new MovementResource { Commands = new List<CommandResource>()};
 
             var result = await controller.Post(query);
 
@@ -62,7 +62,7 @@ namespace TibberRobot.API.Tests
         [Fact]
         public async void Post_ShouldReturn_BadRequest_For_NoCommands()
         {
-            var query = new MovementResource { Commands = new List<CommandResources>(), Start = new PositionResource() };
+            var query = new MovementResource { Commands = new List<CommandResource>(), Start = new PositionResource() };
 
             var result = await controller.Post(query);
 
@@ -73,9 +73,9 @@ namespace TibberRobot.API.Tests
         [MemberData(nameof(InvalidSteps))]
         public async void Post_ShouldReturn_BadRequest_For_Invalid_Steps(int steps)
         {
-            var commands = new List<CommandResources>
+            var commands = new List<CommandResource>
             {
-                new CommandResources() { Direction = "east", Steps = steps }
+                new CommandResource() { Direction = "east", Steps = steps }
             };
             var query = new MovementResource { Commands = commands, Start = new PositionResource() };
 
@@ -87,9 +87,9 @@ namespace TibberRobot.API.Tests
         [Fact]
         public async void Post_ShouldReturn_BadRequest_For_Invalid_Direction()
         {
-            var commands = new List<CommandResources>
+            var commands = new List<CommandResource>
             {
-                new CommandResources() { Direction = "abc", Steps = 1 }
+                new CommandResource() { Direction = "abc", Steps = 1 }
             };
             var query = new MovementResource { Commands = commands, Start = new PositionResource() };
 
@@ -102,9 +102,9 @@ namespace TibberRobot.API.Tests
         [MemberData(nameof(InvalidStarts))]
         public async void Post_ShouldReturn_BadRequest_For_Invalid_Start(int x, int y)
         {
-            var commands = new List<CommandResources>
+            var commands = new List<CommandResource>
             {
-                new CommandResources() { Direction = "west", Steps = 1 }
+                new CommandResource() { Direction = "west", Steps = 1 }
             };
             var position = new PositionResource {X = x, Y = y};
             var query = new MovementResource { Commands = commands, Start = position };
@@ -119,9 +119,9 @@ namespace TibberRobot.API.Tests
         {
             var feature = new Mock<IRobotMovementHandler>();
             feature.Setup(f => f.HandleAsync(It.IsAny<MovementResource>())).ReturnsAsync(It.IsAny<int>());
-            var commands = new List<CommandResources>
+            var commands = new List<CommandResource>
             {
-                new CommandResources() {Direction = "east", Steps = 1}
+                new CommandResource() {Direction = "east", Steps = 1}
             };
             var query = new MovementResource { Commands = commands, Start = new PositionResource() };
             var controller = new RobotController(feature.Object);
