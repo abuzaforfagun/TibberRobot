@@ -8,7 +8,7 @@ namespace TibberRobot.Domain.Features.RobotMovement.Directions
 
         public PositionResource GetNewPoint(decimal x, decimal y)
         {
-            if (IsNextStepValidInNegativeGraph(y, Limit))
+            if (isValidCommand(y, Limit, false))
             {
                 return new PositionResource(x, y - 1);
             }

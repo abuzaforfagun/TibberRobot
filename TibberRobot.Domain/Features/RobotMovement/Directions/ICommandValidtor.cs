@@ -2,7 +2,6 @@
 {
     public interface ICommandValidtor
     {
-        bool IsNextStepValidInNegativeGraph(decimal position, decimal limit);
-        bool IsNextStepValidInPositiveGraph(decimal position, decimal limit);
+        bool isValidCommand(decimal position, decimal limit, bool isPositiveGraph);
     }
 }
