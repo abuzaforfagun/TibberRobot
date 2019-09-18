@@ -5,7 +5,7 @@ namespace TibberRobot.Domain.Resources
     public class MovementResource
     {
         public PositionResource Start { get; set; }
-        public List<CommandResources> Commands { get; set; }
+        public List<CommandResource> Commands { get; set; }
 
         public bool isResourceValid()
         {
