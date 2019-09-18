@@ -30,6 +30,7 @@ namespace TibberRobot.API
             services.AddAutoMapper();
 
             services.AddScoped<IRobotMovementHandler, RobotMovementHandler>();
+            services.AddScoped<IRobotMovementHelper, RobotMovementHelper>();
             services.AddScoped<IMovementRepository, MovementRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }

@@ -11,10 +11,12 @@ namespace TibberRobot.Domain.Tests
 {
     public class RobotMovementTests
     {
-        Mock<IMovementRepository> repositoryMock;
-        Mock<IUnitOfWork> unitOfWorkMock;
-        Mock<IMapper> mapperMock;
-        
+        private readonly Mock<IMovementRepository> repositoryMock;
+        private readonly Mock<IUnitOfWork> unitOfWorkMock;
+        private readonly Mock<IRobotMovementHelper> helperMock;
+        private readonly Mock<IMapper> mapperMock;
+        private readonly RobotMovementHandler handler;
+
         public RobotMovementTests()
         {
             repositoryMock = new Mock<IMovementRepository>();
@@ -23,32 +25,19 @@ namespace TibberRobot.Domain.Tests
             mapperMock = new Mock<IMapper>();
             mapperMock.Setup(m => m.Map<MovementResource, Movement>(It.IsAny<MovementResource>()))
                 .Returns(new Movement());
+            helperMock = new Mock<IRobotMovementHelper>();
+            helperMock.Setup(h => h.GetCleanPoints(It.IsAny<MovementResource>())).Returns(It.IsAny<int>());
 
             unitOfWorkMock.Setup(u => u.MovementRepository).Returns(repositoryMock.Object);
             unitOfWorkMock.Setup(u => u.SaveAsync());
-        }
-        
 
-        [Theory]
-        [MemberData(nameof(ResourceList))]
-        public async void FindUniqueCleanedPlaces_ShouldReturn_CorrectData(MovementResource resource, int expectedResult)
-        {
-            var mockMapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingConfiguration());
-            });
-            var mapper = mockMapper.CreateMapper();
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapper);
+            handler = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object, helperMock.Object);
 
-            var result = await robotMovement.HandleAsync(resource);
-
-            Assert.Equal(expectedResult, result);
         }
 
         [Fact]
-        public async void FindUniqueCleanedPlaces_ShouldCall_Repository()
+        public async void FindUniqueCleanedPlaces_ShouldCall_RobotMovementHelper()
         {
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
             var resource = new MovementResource
             {
                 Start = new PositionResource { X = 10, Y = 20 },
@@ -58,7 +47,24 @@ namespace TibberRobot.Domain.Tests
                 }
             };
 
-            await robotMovement.HandleAsync(resource);
+            await handler.HandleAsync(resource);
+
+            helperMock.Verify(h => h.GetCleanPoints(resource), Times.Once);
+        }
+
+        [Fact]
+        public async void FindUniqueCleanedPlaces_ShouldCall_Repository()
+        {
+            var resource = new MovementResource
+            {
+                Start = new PositionResource { X = 10, Y = 20 },
+                Commands = new List<CommandResource>
+                {
+                    new CommandResource {Direction = "east", Steps = 2}
+                }
+            };
+
+            await handler.HandleAsync(resource);
 
             repositoryMock.Verify(r => r.Add(It.IsAny<Movement>()), Times.Once);
         }
@@ -66,7 +72,6 @@ namespace TibberRobot.Domain.Tests
         [Fact]
         public async void FindUniqueCleanedPlaces_ShouldCall_SaveChanges()
         {
-            var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapperMock.Object);
             var resource = new MovementResource
             {
                 Start = new PositionResource { X = 10, Y = 20 },
@@ -76,349 +81,9 @@ namespace TibberRobot.Domain.Tests
                 }
             };
 
-            await robotMovement.HandleAsync(resource);
+            await handler.HandleAsync(resource);
 
             unitOfWorkMock.Verify(r => r.SaveAsync(), Times.Once);
         }
-
-        #region memory data
-        public static IEnumerable<object[]> ResourceList() =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 10, Y = 0},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "east", Steps = 1}
-                        }
-                    },
-                    4
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 10, Y = 0},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 15},
-                        }
-                    },
-                    10
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = -5, Y = 0},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 15},
-                        }
-                    },
-                    0
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = -10, Y = 0},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "west", Steps = 3},
-                        }
-                    },
-                    3
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = -10, Y = 0},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "west", Steps = 15},
-                        }
-                    },
-                    10
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 5, Y = 0},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "west", Steps = 15},
-                        }
-                    },
-                    0
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 0, Y = 10},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "north", Steps = 3},
-                            new CommandResource {Direction = "north", Steps = 1}
-                        }
-                    },
-                    4
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 0, Y = 10},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "north", Steps = 15},
-                        }
-                    },
-                    10
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 0, Y = -5},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "north", Steps = 15},
-                        }
-                    },
-                    0
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 0, Y = -10},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "south", Steps = 3},
-                        }
-                    },
-                    3
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 0, Y = -10},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "south", Steps = 15},
-                        }
-                    },
-                    10
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 0, Y = 5},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "south", Steps = 15},
-                        }
-                    },
-                    0
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 10, Y = 0},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "west", Steps = 1}
-                        }
-                    },
-                    3
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = -10, Y = 0},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "west", Steps = 1}
-                        }
-                    },
-                    1
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 10, Y = 0},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "west", Steps = 5}
-                        }
-                    },
-                    4
-                },
-                new object[] {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X = 10, Y = 20},
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 2},
-                            new CommandResource {Direction = "west", Steps = 3}
-                        }
-                    },
-                    3
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =0, Y =10 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "north", Steps = 3},
-                            new CommandResource {Direction = "south", Steps = 1}
-                        }
-                    }, 3
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =0, Y =10 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "south", Steps = 4},
-                            new CommandResource {Direction = "north", Steps = 3}
-                        }
-                    }, 3
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =0, Y =10 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "north", Steps = 3},
-                            new CommandResource {Direction = "south", Steps = 4}
-                    }
-                    }, 4
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =0, Y =10 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "north", Steps = 4},
-                            new CommandResource {Direction = "south", Steps = 4}
-                    }
-                    }, 5
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =-10, Y =10 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "north", Steps = 4},
-                            new CommandResource {Direction = "south", Steps = 4}
-                        }
-                    }, 5
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =10, Y =10 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "north", Steps = 4},
-                            new CommandResource {Direction = "south", Steps = 4}
-                        }
-                    }, 7
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =10, Y =10 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "north", Steps = 4},
-                            new CommandResource {Direction = "east", Steps = 1},
-                            new CommandResource {Direction = "south", Steps = 4}
-                        }
-                    }, 12
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =10, Y =10 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "north", Steps = 4},
-                            new CommandResource {Direction = "east", Steps = 1},
-                            new CommandResource {Direction = "west", Steps = 1},
-                            new CommandResource {Direction = "south", Steps = 4}
-                        }
-                    }, 8
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =10, Y =10 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "north", Steps = 4},
-                            new CommandResource {Direction = "east", Steps = 1},
-                            new CommandResource {Direction = "west", Steps = 1},
-                            new CommandResource {Direction = "south", Steps = 4},
-                            new CommandResource {Direction = "north", Steps = 1},
-                            new CommandResource {Direction = "west", Steps = 4}
-                    }
-                    }, 11
-                },
-                new object[]
-                {
-                    new MovementResource
-                    {
-                        Start = new PositionResource {X =-5, Y =-5 },
-                        Commands = new List<CommandResource>
-                        {
-                            new CommandResource {Direction = "east", Steps = 3},
-                            new CommandResource {Direction = "west", Steps = 1},
-                            new CommandResource {Direction = "south", Steps = 4},
-                            new CommandResource {Direction = "north", Steps = 1},
-                            new CommandResource {Direction = "west", Steps = 4}
-                        }
-                    }, 9
-                },
-            };
-        #endregion
     }
 }

@@ -1,6 +1,6 @@
 ﻿using TibberRobot.Domain.Resources;
 
-namespace TibberRobot.Domain.Features.RobotMovement.Directions
+namespace TibberRobot.Domain.Features.RobotMovement.Commands
 {
     public interface ICommand
     {

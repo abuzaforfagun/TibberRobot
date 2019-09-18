@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using TibberRobot.Domain.Features.RobotMovement.Directions;
+using TibberRobot.Domain.Features.RobotMovement.Commands;
 using TibberRobot.Domain.Resources;
 using TibberRobot.Entities;
 
