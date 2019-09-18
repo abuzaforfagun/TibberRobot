@@ -9,7 +9,7 @@ using AutoMapper;
 
 namespace TibberRobot.Domain.Tests
 {
-    public class RobotMovementTests
+    public class RobotMovementHandlerTests
     {
         private readonly Mock<IMovementRepository> repositoryMock;
         private readonly Mock<IUnitOfWork> unitOfWorkMock;
@@ -17,7 +17,7 @@ namespace TibberRobot.Domain.Tests
         private readonly Mock<IMapper> mapperMock;
         private readonly RobotMovementHandler handler;
 
-        public RobotMovementTests()
+        public RobotMovementHandlerTests()
         {
             repositoryMock = new Mock<IMovementRepository>();
             unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -36,7 +36,7 @@ namespace TibberRobot.Domain.Tests
         }
 
         [Fact]
-        public async void FindUniqueCleanedPlaces_ShouldCall_RobotMovementHelper()
+        public async void HandleAsync_ShouldCall_RobotMovementHelper()
         {
             var resource = new MovementResource
             {
@@ -53,7 +53,7 @@ namespace TibberRobot.Domain.Tests
         }
 
         [Fact]
-        public async void FindUniqueCleanedPlaces_ShouldCall_Repository()
+        public async void HandleAsync_ShouldCall_Repository()
         {
             var resource = new MovementResource
             {
@@ -70,7 +70,7 @@ namespace TibberRobot.Domain.Tests
         }
 
         [Fact]
-        public async void FindUniqueCleanedPlaces_ShouldCall_SaveChanges()
+        public async void HandleAsync_ShouldCall_SaveChanges()
         {
             var resource = new MovementResource
             {

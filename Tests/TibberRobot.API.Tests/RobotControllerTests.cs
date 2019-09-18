@@ -16,6 +16,7 @@ namespace TibberRobot.API.Tests
         {
             controller = new RobotController(Mock.Of<IRobotMovementHandler>());
         }
+
         [Fact]
         public async void Post_ShoulReturn_OkResponse_For_CorrectData()
         {
@@ -106,7 +107,7 @@ namespace TibberRobot.API.Tests
             {
                 new CommandResource() { Direction = "west", Steps = 1 }
             };
-            var position = new PositionResource {X = x, Y = y};
+            var position = new PositionResource( x, y );
             var query = new MovementResource { Commands = commands, Start = position };
 
             var result = await controller.Post(query);
@@ -115,20 +116,20 @@ namespace TibberRobot.API.Tests
         }
 
         [Fact]
-        public async void Post_ShouldCall_FindUniqueCleanedPlaces()
+        public async void Post_ShouldCall_RobotMovementHandler()
         {
-            var feature = new Mock<IRobotMovementHandler>();
-            feature.Setup(f => f.HandleAsync(It.IsAny<MovementResource>())).ReturnsAsync(It.IsAny<int>());
+            var handler = new Mock<IRobotMovementHandler>();
+            handler.Setup(f => f.HandleAsync(It.IsAny<MovementResource>())).ReturnsAsync(It.IsAny<int>());
             var commands = new List<CommandResource>
             {
                 new CommandResource() {Direction = "east", Steps = 1}
             };
             var query = new MovementResource { Commands = commands, Start = new PositionResource() };
-            var controller = new RobotController(feature.Object);
+            var controller = new RobotController(handler.Object);
 
             await controller.Post(query);
 
-            feature.Verify(f => f.HandleAsync(query), Times.Once);
+            handler.Verify(f => f.HandleAsync(query), Times.Once);
 
         }
 
