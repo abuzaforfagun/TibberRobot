@@ -1,18 +1,15 @@
-﻿using TibberRobot.Domain.Resources;
+﻿using TibberRobot.Domain.Features.RobotMovement.CommandValidators;
+using TibberRobot.Domain.Resources;
 
 namespace TibberRobot.Domain.Features.RobotMovement.Directions
 {
-    public class NorthCommand : CommandValidtor, ICommand
+    public class NorthCommand : PositiveGraphCommandValidator, ICommand
     {
         public decimal Limit { get; set; }
 
         public PositionResource GetNewPoint(decimal x, decimal y)
         {
-            if (isValidCommand(y, Limit, true))
-            {
-                return new PositionResource(x, y + 1);
-            }
-            return null;
+            return IsValidCommand(y, Limit) ? new PositionResource(x, y + 1) : null;
         }
     }
 }
