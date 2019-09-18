@@ -32,33 +32,32 @@ namespace TibberRobot.Domain.Features.RobotMovement
             {
                 for (int i = 0; i < s.Steps; i++)
                 {
-                    if (s.Direction == "east")
+                    switch (s.Direction)
                     {
-                        result.Add(new EastCommand
-                        {
-                            Limit = source.Start.X
-                        });
-                    }
-                    else if (s.Direction == "west")
-                    {
-                        result.Add(new WestCommand
-                        {
-                            Limit = source.Start.X
-                        });
-                    }
-                    else if (s.Direction == "north")
-                    {
-                        result.Add(new NorthCommand
-                        {
-                            Limit = source.Start.Y
-                        });
-                    }
-                    else if (s.Direction == "south")
-                    {
-                        result.Add(new SouthCommand
-                        {
-                            Limit = source.Start.Y
-                        });
+                        case "east":
+                            result.Add(new EastCommand
+                            {
+                                Limit = source.Start.X
+                            });
+                            break;
+                        case "west":
+                            result.Add(new WestCommand
+                            {
+                                Limit = source.Start.X
+                            });
+                            break;
+                        case "north":
+                            result.Add(new NorthCommand
+                            {
+                                Limit = source.Start.Y
+                            });
+                            break;
+                        case "south":
+                            result.Add(new SouthCommand
+                            {
+                                Limit = source.Start.Y
+                            });
+                            break;
                     }
                 }
             }
