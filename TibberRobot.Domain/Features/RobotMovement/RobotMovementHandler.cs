@@ -37,31 +37,26 @@ namespace TibberRobot.Domain.Features.RobotMovement
         private int GetCleanPoints(MovementResource movement)
         {
             var uniquePoints = new List<PositionResource>();
-            decimal _x = 0;
-            decimal _y = 0;
             var commands = mapper.Map<MovementResource, IEnumerable<ICommand>>(movement);
+            var lastPosition = new PositionResource();
 
             foreach (var _command in commands)
             {
-                var newPosition = _command.GetNewPoint(_x, _y);
-                if (newPosition == null)
-                {
-                    continue;
-                }
-                _x = newPosition.X;
-                _y = newPosition.Y;
-
-                AddPath(uniquePoints, _x, _y);
+                var newPosition = _command.GetNewPoint(lastPosition.X, lastPosition.Y);
+                
+                lastPosition = newPosition ?? lastPosition;
+                
+                AddPoint(uniquePoints, newPosition);
 
             }
             return uniquePoints.Count;
         }
 
-        private static void AddPath(List<PositionResource> uniquePoints, decimal _x, decimal _y)
+        private static void AddPoint(List<PositionResource> uniquePoints, PositionResource point)
         {
-            if (uniquePoints.Count(r => r.Y == _y && r.X == _x) == 0)
+            if (point != null && uniquePoints.Count(r => r.Y == point.Y && r.X == point.X) == 0)
             {
-                uniquePoints.Add(new PositionResource(_x, _y));
+                uniquePoints.Add(point);
             }
         }
     }
