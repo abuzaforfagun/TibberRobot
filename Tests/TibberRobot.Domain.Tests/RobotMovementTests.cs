@@ -25,7 +25,7 @@ namespace TibberRobot.Domain.Tests
                 .Returns(new Movement());
 
             unitOfWorkMock.Setup(u => u.MovementRepository).Returns(repositoryMock.Object);
-            unitOfWorkMock.Setup(u => u.SaveChangesAsync());
+            unitOfWorkMock.Setup(u => u.SaveAsync());
         }
         
 
@@ -40,7 +40,7 @@ namespace TibberRobot.Domain.Tests
             var mapper = mockMapper.CreateMapper();
             var robotMovement = new RobotMovementHandler(unitOfWorkMock.Object, mapper);
 
-            var result = await robotMovement.FindUniqueCleanedPlacesAsync(resource);
+            var result = await robotMovement.HandleAsync(resource);
 
             Assert.Equal(expectedResult, result);
         }
@@ -52,13 +52,13 @@ namespace TibberRobot.Domain.Tests
             var resource = new MovementResource
             {
                 Start = new PositionResource { X = 10, Y = 20 },
-                Commands = new List<CommandsResources>
+                Commands = new List<CommandResources>
                 {
-                    new CommandsResources {Direction = "east", Steps = 2}
+                    new CommandResources {Direction = "east", Steps = 2}
                 }
             };
 
-            await robotMovement.FindUniqueCleanedPlacesAsync(resource);
+            await robotMovement.HandleAsync(resource);
 
             repositoryMock.Verify(r => r.Add(It.IsAny<Movement>()), Times.Once);
         }
@@ -70,15 +70,15 @@ namespace TibberRobot.Domain.Tests
             var resource = new MovementResource
             {
                 Start = new PositionResource { X = 10, Y = 20 },
-                Commands = new List<CommandsResources>
+                Commands = new List<CommandResources>
                 {
-                    new CommandsResources {Direction = "east", Steps = 2}
+                    new CommandResources {Direction = "east", Steps = 2}
                 }
             };
 
-            await robotMovement.FindUniqueCleanedPlacesAsync(resource);
+            await robotMovement.HandleAsync(resource);
 
-            unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+            unitOfWorkMock.Verify(r => r.SaveAsync(), Times.Once);
         }
 
         #region memory data
@@ -90,10 +90,10 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 10, Y = 0},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "east", Steps = 1}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "east", Steps = 1}
                         }
                     },
                     4
@@ -103,9 +103,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 10, Y = 0},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 15},
+                            new CommandResources {Direction = "east", Steps = 15},
                         }
                     },
                     10
@@ -115,9 +115,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = -5, Y = 0},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 15},
+                            new CommandResources {Direction = "east", Steps = 15},
                         }
                     },
                     0
@@ -127,9 +127,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = -10, Y = 0},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "west", Steps = 3},
+                            new CommandResources {Direction = "west", Steps = 3},
                         }
                     },
                     3
@@ -139,9 +139,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = -10, Y = 0},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "west", Steps = 15},
+                            new CommandResources {Direction = "west", Steps = 15},
                         }
                     },
                     10
@@ -151,9 +151,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 5, Y = 0},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "west", Steps = 15},
+                            new CommandResources {Direction = "west", Steps = 15},
                         }
                     },
                     0
@@ -163,10 +163,10 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 0, Y = 10},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "north", Steps = 3},
-                            new CommandsResources {Direction = "north", Steps = 1}
+                            new CommandResources {Direction = "north", Steps = 3},
+                            new CommandResources {Direction = "north", Steps = 1}
                         }
                     },
                     4
@@ -176,9 +176,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 0, Y = 10},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "north", Steps = 15},
+                            new CommandResources {Direction = "north", Steps = 15},
                         }
                     },
                     10
@@ -188,9 +188,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 0, Y = -5},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "north", Steps = 15},
+                            new CommandResources {Direction = "north", Steps = 15},
                         }
                     },
                     0
@@ -200,9 +200,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 0, Y = -10},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "south", Steps = 3},
+                            new CommandResources {Direction = "south", Steps = 3},
                         }
                     },
                     3
@@ -212,9 +212,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 0, Y = -10},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "south", Steps = 15},
+                            new CommandResources {Direction = "south", Steps = 15},
                         }
                     },
                     10
@@ -224,9 +224,9 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 0, Y = 5},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "south", Steps = 15},
+                            new CommandResources {Direction = "south", Steps = 15},
                         }
                     },
                     0
@@ -236,10 +236,10 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 10, Y = 0},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "west", Steps = 1}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "west", Steps = 1}
                         }
                     },
                     3
@@ -249,10 +249,10 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = -10, Y = 0},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "west", Steps = 1}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "west", Steps = 1}
                         }
                     },
                     1
@@ -262,10 +262,10 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 10, Y = 0},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "west", Steps = 5}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "west", Steps = 5}
                         }
                     },
                     4
@@ -274,10 +274,10 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X = 10, Y = 20},
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 2},
-                            new CommandsResources {Direction = "west", Steps = 3}
+                            new CommandResources {Direction = "east", Steps = 2},
+                            new CommandResources {Direction = "west", Steps = 3}
                         }
                     },
                     3
@@ -287,10 +287,10 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =0, Y =10 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "north", Steps = 3},
-                            new CommandsResources {Direction = "south", Steps = 1}
+                            new CommandResources {Direction = "north", Steps = 3},
+                            new CommandResources {Direction = "south", Steps = 1}
                         }
                     }, 3
                 },
@@ -299,10 +299,10 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =0, Y =10 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "south", Steps = 4},
-                            new CommandsResources {Direction = "north", Steps = 3}
+                            new CommandResources {Direction = "south", Steps = 4},
+                            new CommandResources {Direction = "north", Steps = 3}
                         }
                     }, 3
                 },
@@ -311,10 +311,10 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =0, Y =10 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "north", Steps = 3},
-                            new CommandsResources {Direction = "south", Steps = 4}
+                            new CommandResources {Direction = "north", Steps = 3},
+                            new CommandResources {Direction = "south", Steps = 4}
                     }
                     }, 4
                 },
@@ -323,11 +323,11 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =0, Y =10 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "north", Steps = 4},
-                            new CommandsResources {Direction = "south", Steps = 4}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "north", Steps = 4},
+                            new CommandResources {Direction = "south", Steps = 4}
                     }
                     }, 5
                 },
@@ -336,11 +336,11 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =-10, Y =10 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "north", Steps = 4},
-                            new CommandsResources {Direction = "south", Steps = 4}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "north", Steps = 4},
+                            new CommandResources {Direction = "south", Steps = 4}
                         }
                     }, 5
                 },
@@ -349,11 +349,11 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =10, Y =10 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "north", Steps = 4},
-                            new CommandsResources {Direction = "south", Steps = 4}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "north", Steps = 4},
+                            new CommandResources {Direction = "south", Steps = 4}
                         }
                     }, 7
                 },
@@ -362,12 +362,12 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =10, Y =10 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "north", Steps = 4},
-                            new CommandsResources {Direction = "east", Steps = 1},
-                            new CommandsResources {Direction = "south", Steps = 4}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "north", Steps = 4},
+                            new CommandResources {Direction = "east", Steps = 1},
+                            new CommandResources {Direction = "south", Steps = 4}
                         }
                     }, 12
                 },
@@ -376,13 +376,13 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =10, Y =10 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "north", Steps = 4},
-                            new CommandsResources {Direction = "east", Steps = 1},
-                            new CommandsResources {Direction = "west", Steps = 1},
-                            new CommandsResources {Direction = "south", Steps = 4}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "north", Steps = 4},
+                            new CommandResources {Direction = "east", Steps = 1},
+                            new CommandResources {Direction = "west", Steps = 1},
+                            new CommandResources {Direction = "south", Steps = 4}
                         }
                     }, 8
                 },
@@ -391,15 +391,15 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =10, Y =10 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "north", Steps = 4},
-                            new CommandsResources {Direction = "east", Steps = 1},
-                            new CommandsResources {Direction = "west", Steps = 1},
-                            new CommandsResources {Direction = "south", Steps = 4},
-                            new CommandsResources {Direction = "north", Steps = 1},
-                            new CommandsResources {Direction = "west", Steps = 4}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "north", Steps = 4},
+                            new CommandResources {Direction = "east", Steps = 1},
+                            new CommandResources {Direction = "west", Steps = 1},
+                            new CommandResources {Direction = "south", Steps = 4},
+                            new CommandResources {Direction = "north", Steps = 1},
+                            new CommandResources {Direction = "west", Steps = 4}
                     }
                     }, 11
                 },
@@ -408,13 +408,13 @@ namespace TibberRobot.Domain.Tests
                     new MovementResource
                     {
                         Start = new PositionResource {X =-5, Y =-5 },
-                        Commands = new List<CommandsResources>
+                        Commands = new List<CommandResources>
                         {
-                            new CommandsResources {Direction = "east", Steps = 3},
-                            new CommandsResources {Direction = "west", Steps = 1},
-                            new CommandsResources {Direction = "south", Steps = 4},
-                            new CommandsResources {Direction = "north", Steps = 1},
-                            new CommandsResources {Direction = "west", Steps = 4}
+                            new CommandResources {Direction = "east", Steps = 3},
+                            new CommandResources {Direction = "west", Steps = 1},
+                            new CommandResources {Direction = "south", Steps = 4},
+                            new CommandResources {Direction = "north", Steps = 1},
+                            new CommandResources {Direction = "west", Steps = 4}
                         }
                     }, 9
                 },

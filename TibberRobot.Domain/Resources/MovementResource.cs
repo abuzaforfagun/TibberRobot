@@ -5,15 +5,15 @@ namespace TibberRobot.Domain.Resources
     public class MovementResource
     {
         public PositionResource Start { get; set; }
-        public List<CommandsResources> Commands { get; set; }
+        public List<CommandResources> Commands { get; set; }
 
         public bool isResourceValid()
         {
-            if (Start != null && Start.isResourceValid() && Commands != null && Commands.Count > 0)
+            if (Start != null && Start.isValid && Commands != null && Commands.Count > 0)
             {
-                foreach (var commandsResourcese in Commands)
+                foreach (var command in Commands)
                 {
-                    if (!commandsResourcese.isValid())
+                    if (!command.isValid)
                     {
                         return false;
                     }

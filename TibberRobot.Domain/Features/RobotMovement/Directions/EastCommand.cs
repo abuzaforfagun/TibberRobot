@@ -6,7 +6,7 @@ namespace TibberRobot.Domain.Features.RobotMovement.Directions
     {
         public decimal Limit { get; set; }
 
-        public PositionResource GetNewPosition(decimal x, decimal y)
+        public PositionResource GetNewPoint(decimal x, decimal y)
         {
             if (IsNextStepValidInPositiveGraph(x, Limit))
             {

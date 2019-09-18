@@ -20,48 +20,48 @@ namespace TibberRobot.Domain.Features.RobotMovement
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
-        public async Task<int> FindUniqueCleanedPlacesAsync(MovementResource movement)
+        public async Task<int> HandleAsync(MovementResource movement)
         {
             var entity = mapper.Map<MovementResource, Movement>(movement);
-            entity.Result = GetUniqeCleanPoints(movement);
-            unitOfWork.MovementRepository.Add(entity);
+            entity.Result = GetCleanPoints(movement);
 
             var difference = DateTime.Now.Ticks - entity.Timestamp.Ticks;
             var differenceTimeSpan = new TimeSpan(difference);
             entity.Duration = Convert.ToDecimal(differenceTimeSpan.TotalSeconds);
-            await unitOfWork.SaveChangesAsync();
+
+            unitOfWork.MovementRepository.Add(entity);
+            await unitOfWork.SaveAsync();
             return entity.Result;
         }
 
-        private int GetUniqeCleanPoints(MovementResource movement)
+        private int GetCleanPoints(MovementResource movement)
         {
-            var uniquePlaces = new List<PositionResource>();
+            var uniquePoints = new List<PositionResource>();
             decimal _x = 0;
             decimal _y = 0;
-            var directions = mapper.Map<MovementResource, IEnumerable<ICommand>>(movement);
+            var commands = mapper.Map<MovementResource, IEnumerable<ICommand>>(movement);
 
-            //todo: improve the code structure
-            foreach (var _direction in directions)
+            foreach (var _command in commands)
             {
-                var lastPosition = _direction.GetNewPosition(_x, _y);
-                if (lastPosition == null)
+                var newPosition = _command.GetNewPoint(_x, _y);
+                if (newPosition == null)
                 {
                     continue;
                 }
-                _x = lastPosition.X;
-                _y = lastPosition.Y;
+                _x = newPosition.X;
+                _y = newPosition.Y;
 
-                AddPath(uniquePlaces, _x, _y);
+                AddPath(uniquePoints, _x, _y);
 
             }
-            return uniquePlaces.Count;
+            return uniquePoints.Count;
         }
 
-        private static void AddPath(List<PositionResource> uniquePlaces, decimal _x, decimal _y)
+        private static void AddPath(List<PositionResource> uniquePoints, decimal _x, decimal _y)
         {
-            if (uniquePlaces.Count(r => r.Y == _y && r.X == _x) == 0)
+            if (uniquePoints.Count(r => r.Y == _y && r.X == _x) == 0)
             {
-                uniquePlaces.Add(new PositionResource { X = _x, Y = _y });
+                uniquePoints.Add(new PositionResource(_x, _y));
             }
         }
     }

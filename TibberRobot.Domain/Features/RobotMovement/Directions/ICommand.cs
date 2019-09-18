@@ -5,6 +5,6 @@ namespace TibberRobot.Domain.Features.RobotMovement.Directions
     public interface ICommand
     {
         decimal Limit { get; set; }
-        PositionResource GetNewPosition(decimal x, decimal y);
+        PositionResource GetNewPoint(decimal x, decimal y);
     }
 }
