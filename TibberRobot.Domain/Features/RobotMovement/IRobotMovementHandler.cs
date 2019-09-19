@@ -5,6 +5,6 @@ namespace TibberRobot.Domain.Features.RobotMovement
 {
     public interface IRobotMovementHandler
     {
-        Task<int> FindUniqueCleanedPlacesAsync(MovementResource movement);
+        Task<int> HandleAsync(MovementResource movement);
     }
 }

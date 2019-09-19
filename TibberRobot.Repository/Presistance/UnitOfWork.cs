@@ -14,7 +14,7 @@ namespace TibberRobot.Repository.Presistance
             this.MovementRepository = new MovementRepository(context);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveAsync()
         {
             await context.SaveChangesAsync();
         }
