@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Threading.Tasks;
 using TibberRobot.Domain.Features.RobotMovement;
 using TibberRobot.Repository;
 using TibberRobot.Repository.Presistance;
@@ -29,6 +31,10 @@ namespace TibberRobot.API
                     .UseNpgsql(Configuration.GetConnectionString("PostgreSQLDb"))
             );
             services.AddAutoMapper();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Tibber Robot", Version = "v1" });
+            });
 
             services.AddScoped<IRobotMovementHandler, RobotMovementHandler>();
             services.AddScoped<IMovementRepository, MovementRepository>();
@@ -43,7 +49,20 @@ namespace TibberRobot.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("../swagger/v1/swagger.json", "Tibber Robot");
+            });
+
             app.UseMvc();
+
+            app.Run(context =>
+            {
+                context.Response.Redirect("swagger/");
+                return Task.CompletedTask;
+            });
         }
     }
 }
