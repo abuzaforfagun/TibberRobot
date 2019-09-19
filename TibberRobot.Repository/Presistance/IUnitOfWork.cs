@@ -7,6 +7,6 @@ namespace TibberRobot.Repository.Presistance
     {
         IMovementRepository MovementRepository { get; set; }
 
-        Task SaveChangesAsync();
+        Task SaveAsync();
     }
 }
