@@ -15,6 +15,7 @@ namespace TibberRobot.API.Controllers
         {
             _movementHandler = movementHandler;
         }
+        [HttpPost]
         public async Task<IActionResult> Post(MovementResource movement)
         {
             if (!movement.isResourceValid())
