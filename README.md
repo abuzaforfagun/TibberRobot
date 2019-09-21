@@ -5,12 +5,19 @@ Tibber platform consists of swarm of micro services running as Docker containers
 Create a new micro service that could fit into the Tibber Platform environment as described above. The service will simulate a robot moving in an office space and cleaning the places the robot visits. The path of the robot movement is described by start coordinates and move commands. After the cleaning has been done the robot reports the number of unique places cleaned, and the service will store the result into the database. The service listens to HTTP protocol on port 5000.
 
 Request method: POST
+
 Request path: /tibber-developer-test/enter-path
+
 Input criteria:
+
 0 ≤ number of commmands elements ≤ 10000
+
 −100 000 ≤ x ≤ 100 000
+
 −100 000 ≤ y ≤ 100 000
+
 direction ∈ {north, east, south, west}
+
 0 < steps < 100 000
 
 Request body example:
