@@ -96,6 +96,9 @@ You can run the backend service in two ways.
 ### Run docker container
 - Open root folder
 - Open command line on that folder
-- Execute docker-compose build
-- Execute docker-compose up
+- Execute following commands
+
+```docker-compose build```
+
+```docker-compose up```
 
