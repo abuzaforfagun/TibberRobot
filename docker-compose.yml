@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  web:
+    container_name: 'tibberrobot'
+    image: 'tibberrobot'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/tibberrobot
+    ports:
+      - '5001:80'
+    depends_on:
+      - 'db'
+    networks:
+      - aspnetcoreapp-network
+  
+  db:
+    container_name: 'postgres'
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=abuzafor73azf
+    networks:
+      - aspnetcoreapp-network
+
+networks:
+  aspnetcoreapp-network:
+    driver: bridge
