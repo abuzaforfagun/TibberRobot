@@ -15,7 +15,8 @@ direction ∈ {north, east, south, west}
 
 Request body example:
 
-```{
+```
+{
     "start": {
         "x": 10,
         "y": 22
@@ -30,7 +31,9 @@ Request body example:
             "steps": 1
         }
     ]
-}```
+}
+```
+
 
 The resulting value will be stored in a table named executions together with timestamp of insertion, number of command elements and duration of the calculation in seconds.
 
