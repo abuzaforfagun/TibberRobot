@@ -83,10 +83,14 @@ You can run the backend service in two ways.
 #### Command Line
 - Open a command line on the solution folder. 
 - And use the following commands.
+
 ```dotnet restore```
+
 ```dotnet build ```
 - Configure your database from appsettings.json/ and appsettings.development.json and execute
+
 ```dotnet ef database update```
+
 ```dotnet run```
 
 ### Run docker container
