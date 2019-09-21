@@ -18,6 +18,7 @@ namespace TibberRobot.Domain.Features.RobotMovement
         public int GetCleanPoints(MovementResource movement)
         {
             var uniquePoints = new List<PositionResource>();
+            uniquePoints.Add(new PositionResource(0, 0));
             var commands = mapper.Map<MovementResource, IEnumerable<ICommand>>(movement);
             var lastPosition = new PositionResource();
 
@@ -28,7 +29,6 @@ namespace TibberRobot.Domain.Features.RobotMovement
                 lastPosition = newPosition ?? lastPosition;
 
                 AddPoint(uniquePoints, newPosition);
-
             }
             return uniquePoints.Count;
         }
