@@ -90,7 +90,7 @@ You can run the backend service in two ways.
 ```dotnet run```
 
 ### Run docker container
-- Open TibberRobot.API folder
+- Open root folder
 - Open command line on that folder
 - Execute docker-compose build
 - Execute docker-compose up
