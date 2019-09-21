@@ -70,7 +70,7 @@ Stored record example:
 - [Moq](https://github.com/moq/moq4)
 
 ## Setup environment
-** Prerequisite **: Make sure you have installed .NET Core SDK 2.1.1 and PostgreSQL 11.5.
+**Prerequisite**: Make sure you have installed .NET Core SDK 2.1.1 and PostgreSQL 11.5.
 
 You can run the backend service in two ways.
 #### Visual Studio
