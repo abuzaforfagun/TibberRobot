@@ -1,4 +1,6 @@
-﻿namespace TibberRobot.Domain.Resources
+﻿using System;
+
+namespace TibberRobot.Domain.Resources
 {
     public class PositionResource
     {
@@ -16,6 +18,17 @@
         public PositionResource()
         {
             
+        }
+
+        public override int GetHashCode()
+        {
+            return (X + Y).GetHashCode();
+        }
+
+        public override bool Equals(Object obj)
+        {
+            PositionResource otherObject = obj as PositionResource;
+            return otherObject != null && otherObject.X == this.X && otherObject.Y == this.Y;
         }
     }
 }
