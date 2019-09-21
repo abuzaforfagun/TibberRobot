@@ -52,19 +52,22 @@ Stored record example:
 
 
 ## Technical Specification
-** Language **: C#
-** Framework **: .NET Core 2.1
-** Project Dependencies **: 
-- [https://github.com/aspnet/EntityFrameworkCore](Microsoft.EntityFrameworkCore)
-- Npgsql.EntityFrameworkCore.PostgreSQL
-- Npgsql.EntityFrameworkCore.PostgreSQL.Design
-- Swashbuckle.AspNetCore
-- Swashbuckle.AspNetCore.SwaggerGen
-- Swashbuckle.AspNetCore.SwaggerUi
-- AutoMapper
-- AutoMapper.Extensions.Microsoft.DependencyInjection
-- xunit
-- Moq
+
+**Language**: C#
+
+**Framework**: .NET Core 2.1
+
+**Project Dependencies**: 
+- [Microsoft.EntityFrameworkCore](https://github.com/aspnet/EntityFrameworkCore)
+- [Npgsql.EntityFrameworkCore.PostgreSQL](https://github.com/npgsql/Npgsql.EntityFrameworkCore.PostgreSQL)
+- [Npgsql.EntityFrameworkCore.PostgreSQL.Design](https://github.com/npgsql/Npgsql.EntityFrameworkCore.PostgreSQL)
+- [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
+- [Swashbuckle.AspNetCore.SwaggerGen](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
+- [Swashbuckle.AspNetCore.SwaggerUi](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
+- [AutoMapper](https://github.com/AutoMapper/AutoMapper)
+- [AutoMapper.Extensions.Microsoft.DependencyInjection](https://github.com/AutoMapper/AutoMapper.Extensions.Microsoft.DependencyInjection)
+- [xunit](https://github.com/xunit/xunit)
+- [Moq](https://github.com/moq/moq4)
 
 ## Setup environment
 ** Prerequisite **: Make sure you have installed .NET Core SDK 2.1.1 and PostgreSQL 11.5.
