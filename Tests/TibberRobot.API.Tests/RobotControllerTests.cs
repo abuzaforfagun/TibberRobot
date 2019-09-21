@@ -61,13 +61,13 @@ namespace TibberRobot.API.Tests
         }
 
         [Fact]
-        public async void Post_ShouldReturn_BadRequest_For_NoCommands()
+        public async void Post_ShouldRequest_With_NoCommands()
         {
             var query = new MovementResource { Commands = new List<CommandResource>(), Start = new PositionResource() };
 
             var result = await controller.Post(query);
 
-            Assert.IsType<BadRequestResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Theory]

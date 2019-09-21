@@ -9,7 +9,7 @@ namespace TibberRobot.Domain.Resources
 
         public bool isResourceValid()
         {
-            if (Start != null && Start.isValid && Commands != null && Commands.Count > 0)
+            if (Start != null && Start.isValid && Commands != null)
             {
                 foreach (var command in Commands)
                 {
